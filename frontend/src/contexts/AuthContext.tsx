@@ -1,13 +1,9 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import {jwtDecode} from 'jwt-decode';
 
-// AWS Cognito configuration from environment
-const COGNITO_DOMAIN = import.meta.env.VITE_COGNITO_DOMAIN || 'medhya.auth.us-east-1.amazoncognito.com';
-const CLIENT_ID = import.meta.env.VITE_COGNITO_CLIENT_ID || '6npa9g9it0o66diikabm29j9je';
-const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI || window.location.origin + '/callback';
-const LOGOUT_URI = import.meta.env.VITE_LOGOUT_URI || window.location.origin + '/login';
+// SIMPLIFIED AUTH CONTEXT - NO COGNITO FOR AMPLIFY DEPLOYMENT
+// This provides a mock authentication system for demo purposes
 
-interface DecodedToken {
+interface MockUser {
   sub: string;
   email: string;
   name?: string;
@@ -16,7 +12,7 @@ interface DecodedToken {
 }
 
 interface AuthContextType {
-  user: DecodedToken | null;
+  user: MockUser | null;
   token: string | null;
   isAdmin: boolean;
   isLoading: boolean;
@@ -28,69 +24,57 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<DecodedToken | null>(null);
+  const [user, setUser] = useState<MockUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // On mount, try loading token from localStorage, decode if valid
+  // Mock authentication - automatically log in as admin for demo
   useEffect(() => {
-    const storedToken = localStorage.getItem('idToken');
-    if (storedToken) {
-      try {
-        const decoded: DecodedToken = jwtDecode(storedToken);
-        if (decoded.exp * 1000 > Date.now()) {
-          setToken(storedToken);
-          setUser(decoded);
-        } else {
-          localStorage.removeItem('idToken');
-        }
-      } catch (error) {
-        console.error('Invalid token:', error);
-        localStorage.removeItem('idToken');
-      }
-    }
+    const mockUser: MockUser = {
+      sub: 'demo-user-123',
+      email: 'demo@quizmaster.com',
+      name: 'Demo User',
+      'cognito:groups': ['admin'],
+      exp: Date.now() / 1000 + 3600 // Expires in 1 hour
+    };
+
+    const mockToken = 'demo-token-' + Date.now();
+    
+    setUser(mockUser);
+    setToken(mockToken);
     setIsLoading(false);
   }, []);
 
-  // Redirect to Cognito Hosted UI login
   const login = () => {
-    // Using implicit flow (response_type=token) - works without client secret
-    const authUrl = `https://${COGNITO_DOMAIN}/login?client_id=${CLIENT_ID}&response_type=token&scope=email+openid+phone&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
-    window.location.href = authUrl;
+    // Mock login - already logged in
+    console.log('Mock login - user already authenticated');
   };
 
-  // Remove token, redirect to Cognito Hosted UI logout
   const logout = () => {
-    localStorage.removeItem('idToken');
-    setUser(null);
     setToken(null);
-    const logoutUrl = `https://${COGNITO_DOMAIN}/logout?client_id=${CLIENT_ID}&logout_uri=${encodeURIComponent(LOGOUT_URI)}`;
-    window.location.href = logoutUrl;
+    setUser(null);
+    // In a real app, this would redirect to login page
+    console.log('Mock logout - user signed out');
   };
 
-  // Function to set token from callback
   const setAuthToken = (newToken: string) => {
-    try {
-      const decoded: DecodedToken = jwtDecode(newToken);
-      if (decoded.exp * 1000 > Date.now()) {
-        setToken(newToken);
-        setUser(decoded);
-        localStorage.setItem('idToken', newToken);
-      } else {
-        throw new Error('Token is expired');
-      }
-    } catch (error) {
-      console.error('Invalid token:', error);
-      localStorage.removeItem('idToken');
-      throw error;
-    }
+    // Mock token setting
+    setToken(newToken);
+    console.log('Mock token set:', newToken);
   };
 
-  // Only users in 'admin' group are admins; everyone else is treated as regular user
-  const isAdmin = Boolean(user?.['cognito:groups']?.includes('admin'));
+  const isAdmin = user?.['cognito:groups']?.includes('admin') ?? false;
 
   return (
-    <AuthContext.Provider value={{ user, token, isAdmin, isLoading, login, logout, setAuthToken }}>
+    <AuthContext.Provider value={{
+      user,
+      token,
+      isAdmin,
+      isLoading,
+      login,
+      logout,
+      setAuthToken
+    }}>
       {children}
     </AuthContext.Provider>
   );
@@ -98,6 +82,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used within an AuthProvider');
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
   return context;
 };
