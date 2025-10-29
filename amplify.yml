@@ -7,6 +7,13 @@ frontend:
         - npm ci
     build:
       commands:
+        - echo "Creating clean .env.production file..."
+        - echo "VITE_COGNITO_DOMAIN=medhya.auth.us-east-1.amazoncognito.com" > .env.production
+        - echo "VITE_COGNITO_CLIENT_ID=6npa9g9it0o66diikabm29j9je" >> .env.production
+        - echo "VITE_REDIRECT_URI=$AMPLIFY_APP_URL/callback" >> .env.production
+        - echo "VITE_LOGOUT_URI=$AMPLIFY_APP_URL/login" >> .env.production
+        - echo "VITE_API_BASE_URL=https://p0r3ff73bh.execute-api.us-east-1.amazonaws.com/prod" >> .env.production
+        - cat .env.production
         - npm run build
   artifacts:
     baseDirectory: frontend/dist

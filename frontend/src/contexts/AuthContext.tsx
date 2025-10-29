@@ -1,9 +1,13 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import {jwtDecode} from 'jwt-decode';
 
-// SIMPLIFIED AUTH CONTEXT - NO COGNITO FOR AMPLIFY DEPLOYMENT
-// This provides a mock authentication system for demo purposes
+// AWS Cognito configuration - hardcoded for Amplify deployment
+const COGNITO_DOMAIN = 'medhya.auth.us-east-1.amazoncognito.com';
+const CLIENT_ID = '6npa9g9it0o66diikabm29j9je';
+const REDIRECT_URI = window.location.origin + '/callback';
+const LOGOUT_URI = window.location.origin + '/login';
 
-interface MockUser {
+interface DecodedToken {
   sub: string;
   email: string;
   name?: string;
@@ -12,7 +16,7 @@ interface MockUser {
 }
 
 interface AuthContextType {
-  user: MockUser | null;
+  user: DecodedToken | null;
   token: string | null;
   isAdmin: boolean;
   isLoading: boolean;
@@ -24,57 +28,69 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<MockUser | null>(null);
+  const [user, setUser] = useState<DecodedToken | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Mock authentication - automatically log in as admin for demo
+  // On mount, try loading token from localStorage, decode if valid
   useEffect(() => {
-    const mockUser: MockUser = {
-      sub: 'demo-user-123',
-      email: 'demo@quizmaster.com',
-      name: 'Demo User',
-      'cognito:groups': ['admin'],
-      exp: Date.now() / 1000 + 3600 // Expires in 1 hour
-    };
-
-    const mockToken = 'demo-token-' + Date.now();
-    
-    setUser(mockUser);
-    setToken(mockToken);
+    const storedToken = localStorage.getItem('idToken');
+    if (storedToken) {
+      try {
+        const decoded: DecodedToken = jwtDecode(storedToken);
+        if (decoded.exp * 1000 > Date.now()) {
+          setToken(storedToken);
+          setUser(decoded);
+        } else {
+          localStorage.removeItem('idToken');
+        }
+      } catch (error) {
+        console.error('Invalid token:', error);
+        localStorage.removeItem('idToken');
+      }
+    }
     setIsLoading(false);
   }, []);
 
+  // Redirect to Cognito Hosted UI login
   const login = () => {
-    // Mock login - already logged in
-    console.log('Mock login - user already authenticated');
+    // Using implicit flow (response_type=token) - works without client secret
+    const authUrl = `https://${COGNITO_DOMAIN}/login?client_id=${CLIENT_ID}&response_type=token&scope=email+openid+phone&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
+    window.location.href = authUrl;
   };
 
+  // Remove token, redirect to Cognito Hosted UI logout
   const logout = () => {
-    setToken(null);
+    localStorage.removeItem('idToken');
     setUser(null);
-    // In a real app, this would redirect to login page
-    console.log('Mock logout - user signed out');
+    setToken(null);
+    const logoutUrl = `https://${COGNITO_DOMAIN}/logout?client_id=${CLIENT_ID}&logout_uri=${encodeURIComponent(LOGOUT_URI)}`;
+    window.location.href = logoutUrl;
   };
 
+  // Function to set token from callback
   const setAuthToken = (newToken: string) => {
-    // Mock token setting
-    setToken(newToken);
-    console.log('Mock token set:', newToken);
+    try {
+      const decoded: DecodedToken = jwtDecode(newToken);
+      if (decoded.exp * 1000 > Date.now()) {
+        setToken(newToken);
+        setUser(decoded);
+        localStorage.setItem('idToken', newToken);
+      } else {
+        throw new Error('Token is expired');
+      }
+    } catch (error) {
+      console.error('Invalid token:', error);
+      localStorage.removeItem('idToken');
+      throw error;
+    }
   };
 
-  const isAdmin = user?.['cognito:groups']?.includes('admin') ?? false;
+  // Only users in 'admin' group are admins; everyone else is treated as regular user
+  const isAdmin = Boolean(user?.['cognito:groups']?.includes('admin'));
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      token,
-      isAdmin,
-      isLoading,
-      login,
-      logout,
-      setAuthToken
-    }}>
+    <AuthContext.Provider value={{ user, token, isAdmin, isLoading, login, logout, setAuthToken }}>
       {children}
     </AuthContext.Provider>
   );
@@ -82,8 +98,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
   return context;
 };
