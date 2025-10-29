@@ -71,8 +71,11 @@ export const mockModels = {
   listQuizzes: async () => mockData.quizzes,
   getQuiz: async (id) => mockData.quizzes.find(q => q.id === id),
   createQuiz: async (quiz) => {
+    console.log('Mock createQuiz called with:', quiz);
     const newQuiz = { ...quiz, id: Date.now().toString() };
+    console.log('Created new quiz:', newQuiz);
     mockData.quizzes.push(newQuiz);
+    console.log('Total quizzes now:', mockData.quizzes.length);
     return newQuiz;
   },
   updateQuiz: async (id, updates) => {

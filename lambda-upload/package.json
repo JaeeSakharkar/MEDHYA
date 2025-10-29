@@ -1,0 +1,22 @@
+{
+  "name": "quizmaster-lambda-upload",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "QuizMaster V2 Lambda Function for Manual Upload",
+  "main": "index.mjs",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.919.0",
+    "@aws-sdk/lib-dynamodb": "^3.919.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "lambda",
+    "quiz",
+    "cognito",
+    "dynamodb"
+  ],
+  "author": "QuizMaster V2",
+  "license": "MIT"
+}

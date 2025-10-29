@@ -1,11 +1,17 @@
 {
-  "name": "quizmaster-backend-vite",
+  "name": "quizmaster-backend-lambda",
   "version": "1.0.0",
   "type": "module",
+  "description": "QuizMaster V2 Lambda Backend with Vite",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "build": "vite build",
-    "preview": "vite preview",
+    "build": "echo 'No build needed for Lambda'",
+    "deploy": "serverless deploy --stage prod",
+    "deploy:dev": "serverless deploy --stage dev",
+    "remove": "serverless remove --stage prod",
+    "logs": "serverless logs -f api --stage prod",
+    "invoke": "serverless invoke -f api --stage prod",
+    "test": "node test-endpoints.js",
     "start": "node src/index.js"
   },
   "dependencies": {
@@ -16,11 +22,24 @@
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "jwks-rsa": "^3.2.0"
+    "jwks-rsa": "^3.2.0",
+    "serverless-http": "^3.2.0"
   },
   "devDependencies": {
-    "vite": "^5.4.19",
-    "@types/node": "^22.16.5",
-    "nodemon": "^3.0.0"
-  }
+    "nodemon": "^3.0.0",
+    "serverless": "^3.38.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "lambda",
+    "serverless",
+    "quiz",
+    "cognito",
+    "dynamodb",
+    "express"
+  ],
+  "author": "QuizMaster V2",
+  "license": "MIT"
 }

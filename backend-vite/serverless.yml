@@ -16,10 +16,22 @@ provider:
     COGNITO_CLIENT_ID: 6npa9g9it0o66diikabm29j9je
     COGNITO_REGION: us-east-1
     COGNITO_DOMAIN: medhya.auth.us-east-1.amazoncognito.com
+    DYNAMODB_TABLE: QuizMasterTable
     AWS_REGION: ${self:provider.region}
   
-  # Remove IAM role statements for lab compatibility
-  # Use mock database instead of DynamoDB for lab environment
+  # IAM permissions for DynamoDB (if lab allows)
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/QuizMasterTable"
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/QuizMasterTable/index/*"
 
 functions:
   api:

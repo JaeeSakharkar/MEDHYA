@@ -1,6 +1,6 @@
 // API client for Quiz Learning Platform
 // Base URL should be set in environment variables
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
 // Generic API call function
 async function apiCall<T>(

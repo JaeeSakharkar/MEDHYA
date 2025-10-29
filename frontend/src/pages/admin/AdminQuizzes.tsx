@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { quizzesApi } from '@/lib/api';
+import { localApi } from '@/services/localApi';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { Plus, Edit, Trash2, BookOpen } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -23,9 +23,8 @@ const AdminQuizzes = () => {
   const [formData, setFormData] = useState({ title: '', description: '', subjectId: '' });
 
   const fetchQuizzes = async () => {
-    if (!token) return;
     try {
-      const data = await quizzesApi.getAll(token);
+      const data = await localApi.quizzes.getAll();
       setQuizzes(Array.isArray(data) ? data : []);
     } catch (err: any) {
       toast({ variant: 'destructive', title: 'Error', description: err.message });
@@ -36,18 +35,17 @@ const AdminQuizzes = () => {
 
   useEffect(() => {
     fetchQuizzes();
-  }, [token]);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!token) return;
 
     try {
       if (editingQuiz) {
-        await quizzesApi.update(editingQuiz.id, formData, token);
+        await localApi.quizzes.update(editingQuiz.id, formData);
         toast({ title: 'Success', description: 'Quiz updated successfully' });
       } else {
-        await quizzesApi.create(formData, token);
+        await localApi.quizzes.create(formData);
         toast({ title: 'Success', description: 'Quiz created successfully' });
       }
       setIsDialogOpen(false);
@@ -66,10 +64,10 @@ const AdminQuizzes = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!token || !confirm('Are you sure you want to delete this quiz?')) return;
+    if (!confirm('Are you sure you want to delete this quiz?')) return;
 
     try {
-      await quizzesApi.delete(id, token);
+      await localApi.quizzes.delete(id);
       toast({ title: 'Success', description: 'Quiz deleted successfully' });
       fetchQuizzes();
     } catch (err: any) {

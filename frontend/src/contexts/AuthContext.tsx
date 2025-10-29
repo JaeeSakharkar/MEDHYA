@@ -2,8 +2,8 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import {jwtDecode} from 'jwt-decode';
 
 // AWS Cognito configuration from environment
-const COGNITO_DOMAIN = import.meta.env.VITE_COGNITO_DOMAIN;
-const CLIENT_ID = import.meta.env.VITE_COGNITO_CLIENT_ID;
+const COGNITO_DOMAIN = import.meta.env.VITE_COGNITO_DOMAIN || 'medhya.auth.us-east-1.amazoncognito.com';
+const CLIENT_ID = import.meta.env.VITE_COGNITO_CLIENT_ID || '6npa9g9it0o66diikabm29j9je';
 const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI || window.location.origin + '/callback';
 const LOGOUT_URI = import.meta.env.VITE_LOGOUT_URI || window.location.origin + '/login';
 

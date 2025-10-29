@@ -1,0 +1,26 @@
+[
+    {
+        "id": "1",
+        "title": "JavaScript Basics",
+        "description": "Test your JavaScript knowledge with fundamental concepts",
+        "subjectId": "1",
+        "createdAt": "2024-01-01T00:00:00.000Z",
+        "updatedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+        "id": "2",
+        "title": "React Fundamentals", 
+        "description": "Learn React basics including components, props, and state",
+        "subjectId": "1",
+        "createdAt": "2024-01-01T00:00:00.000Z",
+        "updatedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+        "id": "3",
+        "title": "AWS Services Overview",
+        "description": "Introduction to core AWS services and cloud computing",
+        "subjectId": "2",
+        "createdAt": "2024-01-01T00:00:00.000Z",
+        "updatedAt": "2024-01-01T00:00:00.000Z"
+    }
+]

@@ -3,25 +3,27 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Header } from '@/components/Header';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { adminApi, quizzesApi, usersApi, scoresApi } from '@/lib/api';
+import { localApi } from '@/services/localApi';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
-import { Users, BookOpen, Trophy, TrendingUp } from 'lucide-react';
+import { Users, BookOpen, Trophy, TrendingUp, Download, Upload } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
 
 const AdminDashboard = () => {
   const { token } = useAuth();
+  const { toast } = useToast();
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
-      if (!token) return;
-      
       try {
-        // Fetch all data for stats
+        // Fetch all data for stats using localStorage
         const [quizzes, users, scores] = await Promise.all([
-          quizzesApi.getAll(token),
-          usersApi.getAll(token),
-          scoresApi.getAll(token)
+          localApi.quizzes.getAll(),
+          localApi.users.getAll(),
+          localApi.scores.getAll()
         ]);
         
         setStats({
@@ -40,7 +42,68 @@ const AdminDashboard = () => {
     };
 
     fetchStats();
-  }, [token]);
+  }, []);
+
+  const exportData = () => {
+    try {
+      const data = {
+        quizzes: JSON.parse(localStorage.getItem('quizmaster_quizzes') || '[]'),
+        questions: JSON.parse(localStorage.getItem('quizmaster_questions') || '[]'),
+        scores: JSON.parse(localStorage.getItem('quizmaster_scores') || '[]'),
+        users: JSON.parse(localStorage.getItem('quizmaster_users') || '[]'),
+        exportDate: new Date().toISOString(),
+        version: '2.0'
+      };
+      
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `quizmaster-data-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      toast({ title: 'Success', description: 'Data exported successfully!' });
+    } catch (error) {
+      toast({ variant: 'destructive', title: 'Error', description: 'Failed to export data' });
+    }
+  };
+
+  const importData = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target?.result as string);
+        
+        // Validate data structure
+        if (!data.quizzes || !Array.isArray(data.quizzes)) {
+          throw new Error('Invalid data format');
+        }
+        
+        // Import data to localStorage
+        localStorage.setItem('quizmaster_quizzes', JSON.stringify(data.quizzes || []));
+        localStorage.setItem('quizmaster_questions', JSON.stringify(data.questions || []));
+        localStorage.setItem('quizmaster_scores', JSON.stringify(data.scores || []));
+        localStorage.setItem('quizmaster_users', JSON.stringify(data.users || []));
+        
+        toast({ title: 'Success', description: 'Data imported successfully!' });
+        
+        // Refresh the page to show new data
+        setTimeout(() => window.location.reload(), 1000);
+      } catch (error) {
+        toast({ variant: 'destructive', title: 'Error', description: 'Failed to import data: Invalid file format' });
+      }
+    };
+    reader.readAsText(file);
+    
+    // Reset input
+    event.target.value = '';
+  };
 
   if (loading) return <LoadingSpinner />;
 
@@ -51,8 +114,30 @@ const AdminDashboard = () => {
         <AdminSidebar />
         <main className="flex-1 p-8">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-2">Admin Dashboard</h1>
-            <p className="text-muted-foreground text-lg">Manage your quiz platform</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-4xl font-bold mb-2">Admin Dashboard</h1>
+                <p className="text-muted-foreground text-lg">Manage your quiz platform</p>
+              </div>
+              <div className="flex gap-3">
+                <Button onClick={exportData} variant="outline">
+                  <Download className="h-4 w-4 mr-2" />
+                  Export Data
+                </Button>
+                <div className="relative">
+                  <Input
+                    type="file"
+                    accept=".json"
+                    onChange={importData}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                  <Button variant="outline">
+                    <Upload className="h-4 w-4 mr-2" />
+                    Import Data
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

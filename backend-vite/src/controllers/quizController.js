@@ -33,12 +33,16 @@ export async function getQuizById(req, res) {
  * Create a new quiz.
  */
 export async function createQuiz(req, res) {
+  console.log(`[${req.requestId}] Creating quiz with data:`, req.body);
+  
   try {
     const quiz = req.body;
+    console.log(`[${req.requestId}] Calling quizModel.createQuiz...`);
     const result = await quizModel.createQuiz(quiz);
+    console.log(`[${req.requestId}] Quiz created successfully:`, result);
     res.status(201).json(result);
   } catch (err) {
-    console.error('Create quiz error:', err);
+    console.error(`[${req.requestId}] Create quiz error:`, err);
     res.status(500).json({ error: 'Failed to create quiz.' });
   }
 }
