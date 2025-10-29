@@ -27,7 +27,34 @@ async function submitScore(req, res) {
   }
 }
 
+/**
+ * Get all scores (Admin only).
+ */
+async function getAllScores(req, res) {
+  try {
+    const scores = await scoreModel.listAllScores();
+    res.json(scores);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to get all scores.' });
+  }
+}
+
+/**
+ * Get scores for specific quiz (Admin only).
+ */
+async function getScoresForQuiz(req, res) {
+  try {
+    const { quizId } = req.params;
+    const scores = await scoreModel.listScoresByQuiz(quizId);
+    res.json(scores);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to get quiz scores.' });
+  }
+}
+
 module.exports = {
   getScores,
-  submitScore
+  submitScore,
+  getAllScores,
+  getScoresForQuiz
 };

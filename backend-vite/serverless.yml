@@ -1,0 +1,89 @@
+# Serverless Framework configuration for AWS Lambda deployment
+service: quizmaster-backend
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  stage: ${opt:stage, 'prod'}
+  environment:
+    NODE_ENV: production
+    COGNITO_POOL_ID: ${env:COGNITO_POOL_ID}
+    COGNITO_CLIENT_ID: ${env:COGNITO_CLIENT_ID}
+    COGNITO_REGION: ${env:COGNITO_REGION}
+    COGNITO_DOMAIN: ${env:COGNITO_DOMAIN}
+    DYNAMODB_TABLE: ${self:service}-${self:provider.stage}-table
+    AWS_REGION: ${self:provider.region}
+  
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+        - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}/index/*"
+
+functions:
+  api:
+    handler: src/lambda.handler
+    events:
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors:
+            origin: 
+              - https://main.*.amplifyapp.com
+              - https://*.amplifyapp.com
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: true
+      - http:
+          path: /
+          method: ANY
+          cors:
+            origin: 
+              - https://main.*.amplifyapp.com
+              - https://*.amplifyapp.com
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: true
+
+resources:
+  Resources:
+    QuizMasterTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        AttributeDefinitions:
+          - AttributeName: PK
+            AttributeType: S
+          - AttributeName: SK
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+          - AttributeName: SK
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 5000

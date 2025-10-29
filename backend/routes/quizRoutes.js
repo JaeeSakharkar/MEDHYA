@@ -1,21 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../authMiddleware');
+const { authenticateJWT, requireAdmin } = require('../authMiddleware');
 const quizController = require('../controllers/quizController');
 
-// Get all quizzes
-router.get('/', auth, quizController.getAllQuizzes);
+// Get all quizzes (authenticated users)
+router.get('/', authenticateJWT, quizController.getAllQuizzes);
 
-// Get a specific quiz
-router.get('/:id', auth, quizController.getQuizById);
+// Get a specific quiz (authenticated users)
+router.get('/:id', authenticateJWT, quizController.getQuizById);
 
 // Create a quiz (Admin only)
-router.post('/', auth, quizController.createQuiz);
+router.post('/', authenticateJWT, requireAdmin, quizController.createQuiz);
 
 // Update a quiz (Admin only)
-router.put('/:id', auth, quizController.updateQuiz);
+router.put('/:id', authenticateJWT, requireAdmin, quizController.updateQuiz);
 
 // Delete a quiz (Admin only)
-router.delete('/:id', auth, quizController.deleteQuiz);
+router.delete('/:id', authenticateJWT, requireAdmin, quizController.deleteQuiz);
 
 module.exports = router;

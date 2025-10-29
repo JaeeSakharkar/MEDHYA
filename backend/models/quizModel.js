@@ -1,6 +1,16 @@
 // Quiz Model: All Quiz CRUD logic using DynamoDB
-const ddbDoc = require('../db');
-const TableName = process.env.DYNAMODB_TABLE;
+const useMockDb = !process.env.DYNAMODB_TABLE || process.env.NODE_ENV === 'development';
+
+let ddbDoc, TableName, mockModels;
+
+if (useMockDb) {
+  console.log('Using mock database for quizzes');
+  const { mockModels: models } = require('../db-mock');
+  mockModels = models;
+} else {
+  ddbDoc = require('../db');
+  TableName = process.env.DYNAMODB_TABLE;
+}
 
 /**
  * List all quizzes in the database.

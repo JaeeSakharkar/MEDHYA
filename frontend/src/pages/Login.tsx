@@ -1,84 +1,52 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
-import { LogIn } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { GraduationCap } from 'lucide-react';
 
-export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+const Login = () => {
+  const { user, isAdmin, login } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    try {
-      await login({ email, password });
-      toast({ title: 'Welcome back!', description: 'You have successfully logged in.' });
-      navigate('/');
-    } catch (error) {
-      toast({
-        title: 'Login failed',
-        description: 'Invalid email or password. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    // Redirect if already logged in
+    if (user) {
+      navigate(isAdmin ? '/admin' : '/dashboard');
     }
-  };
+  }, [user, isAdmin, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="glass-card p-8 rounded-2xl w-full max-w-md animate-fade-in">
-        <div className="flex items-center justify-center mb-6">
-          <div className="p-3 rounded-xl bg-primary/20">
-            <LogIn className="h-8 w-8 text-primary" />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted p-4">
+      <Card className="w-full max-w-md shadow-xl">
+        <CardHeader className="text-center space-y-4">
+          <div className="mx-auto h-16 w-16 rounded-2xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center">
+            <GraduationCap className="h-9 w-9 text-primary-foreground" />
           </div>
-        </div>
-        <h1 className="text-3xl font-bold text-center mb-2">Welcome Back</h1>
-        <p className="text-muted-foreground text-center mb-6">Sign in to continue learning</p>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="john@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+          <div>
+            <CardTitle className="text-3xl font-bold">Welcome to QuizLearn</CardTitle>
+            <CardDescription className="text-base mt-2">
+              Your interactive learning platform
+            </CardDescription>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-4">
+            <Button 
+              onClick={login} 
+              className="w-full h-12 text-base font-semibold"
+              size="lg"
+            >
+              Sign In with AWS Cognito
+            </Button>
+            <p className="text-xs text-center text-muted-foreground">
+              You'll be redirected to AWS Cognito Hosted UI for secure authentication
+            </p>
           </div>
-          <Button type="submit" className="w-full gradient-primary" disabled={isLoading}>
-            {isLoading ? 'Signing in...' : 'Sign In'}
-          </Button>
-        </form>
-
-        <p className="text-center text-sm text-muted-foreground mt-6">
-          Don't have an account?{' '}
-          <Link to="/register" className="text-primary hover:underline">
-            Sign up
-          </Link>
-        </p>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
-}
+};
+
+export default Login;

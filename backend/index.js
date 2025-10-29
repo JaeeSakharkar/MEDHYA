@@ -6,13 +6,15 @@ const express = require('express');
 const cors = require('cors');
 
 // Auth middleware (Cognito JWT)
-const authenticateJWT = require('./authMiddleware');
+const { authenticateJWT, requireAdmin } = require('./authMiddleware');
 
 // Modular routes
 const quizRoutes = require('./routes/quizRoutes');
 const chapterRoutes = require('./routes/chapterRoutes');
 const questionRoutes = require('./routes/questionRoutes');
 const scoreRoutes = require('./routes/scoreRoutes');
+const userRoutes = require('./routes/userRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 // Notification util (outside models)
 const { sendNotification } = require('./notification');
@@ -28,15 +30,32 @@ app.get('/', (req, res) => {
   res.send('Quiz Master V2 Express backend running!');
 });
 
+// Test authentication endpoint
+app.get('/test-auth', authenticateJWT, (req, res) => {
+  res.json({
+    message: 'Authentication successful!',
+    user: {
+      id: req.user.sub,
+      email: req.user.email,
+      groups: req.user['cognito:groups'] || [],
+      isAdmin: (req.user['cognito:groups'] || []).includes('admin')
+    }
+  });
+});
+
 // REST API endpoints (modular routers)
+app.use('/auth', authRoutes);
 app.use('/quizzes', quizRoutes);
 app.use('/chapters', chapterRoutes);
 app.use('/questions', questionRoutes);
 app.use('/scores', scoreRoutes);
+app.use('/users', userRoutes);
 
-// Example notification endpoint
-app.post('/notify', authenticateJWT, async (req, res) => {
-  // Only Admin should be allowed to use this (add adminOnly middleware if needed!)
+// Profile endpoint (alias for user profile)
+app.use('/profile', userRoutes);
+
+// Example notification endpoint (Admin only)
+app.post('/notify', authenticateJWT, requireAdmin, async (req, res) => {
   try {
     const { message } = req.body;
     await sendNotification(message);

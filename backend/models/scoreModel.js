@@ -46,8 +46,41 @@ async function getScore(userId, scoreSk) {
   return Item;
 }
 
+/**
+ * List all scores (Admin only)
+ */
+async function listAllScores() {
+  const params = {
+    TableName,
+    FilterExpression: 'begins_with(SK, :sk)',
+    ExpressionAttributeValues: {
+      ':sk': 'SCORE#'
+    }
+  };
+  const { Items } = await ddbDoc.scan(params);
+  return Items;
+}
+
+/**
+ * List scores for a specific quiz (Admin only)
+ */
+async function listScoresByQuiz(quizId) {
+  const params = {
+    TableName,
+    FilterExpression: 'quizId = :quizId AND begins_with(SK, :sk)',
+    ExpressionAttributeValues: {
+      ':quizId': quizId,
+      ':sk': 'SCORE#'
+    }
+  };
+  const { Items } = await ddbDoc.scan(params);
+  return Items;
+}
+
 module.exports = {
   listScores,
   createScore,
-  getScore
+  getScore,
+  listAllScores,
+  listScoresByQuiz
 };
