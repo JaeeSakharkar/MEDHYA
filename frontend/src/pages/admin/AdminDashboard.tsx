@@ -5,6 +5,7 @@ import { AdminSidebar } from '@/components/AdminSidebar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { backendApi } from '@/services/backendApi';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
+import { MockDataBanner } from '@/components/MockDataBanner';
 import { Users, BookOpen, Trophy, TrendingUp, Download, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -113,6 +114,7 @@ const AdminDashboard = () => {
       <div className="flex">
         <AdminSidebar />
         <main className="flex-1 p-8">
+          <MockDataBanner />
           <div className="mb-8">
             <div className="flex items-center justify-between">
               <div>
