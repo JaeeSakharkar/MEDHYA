@@ -19,6 +19,7 @@ import AdminChapters from "./pages/admin/AdminChapters";
 import AdminScores from "./pages/admin/AdminScores";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AuthTest from "./pages/AuthTest";
+import CognitoTest from "./pages/CognitoTest";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/callback" element={<Callback />} />
             <Route path="/auth-test" element={<AuthTest />} />
+            <Route path="/cognito-test" element={<CognitoTest />} />
             <Route
               path="/dashboard"
               element={

@@ -7,6 +7,14 @@ const CLIENT_ID = '6npa9g9it0o66diikabm29j9je';
 const REDIRECT_URI = window.location.origin + '/callback';
 const LOGOUT_URI = window.location.origin + '/login';
 
+console.log('Cognito Config:', {
+  COGNITO_DOMAIN,
+  CLIENT_ID,
+  REDIRECT_URI,
+  LOGOUT_URI,
+  currentOrigin: window.location.origin
+});
+
 interface DecodedToken {
   sub: string;
   email: string;
@@ -55,7 +63,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Redirect to Cognito Hosted UI login
   const login = () => {
     // Using implicit flow (response_type=token) - works without client secret
-    const authUrl = `https://${COGNITO_DOMAIN}/login?client_id=${CLIENT_ID}&response_type=token&scope=email+openid+phone&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
+    const authUrl = `https://${COGNITO_DOMAIN}/login?client_id=${CLIENT_ID}&response_type=token&scope=email+openid+profile&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
+    console.log('Redirecting to Cognito:', authUrl);
     window.location.href = authUrl;
   };
 
