@@ -1,6 +1,6 @@
-# QuizLearn Platform
+# MEDHYA - Medical Education Platform
 
-A comprehensive React + TypeScript quiz learning platform with AWS Cognito authentication, supporting both user and admin workflows.
+A comprehensive React + TypeScript medical education platform with AWS Cognito authentication, supporting both student and admin workflows.
 
 ## Features
 
@@ -182,8 +182,8 @@ src/
 npm run build
 ```
 
-### Deploy to Lovable
-Simply open [Lovable](https://lovable.dev/projects/b3ffd805-5f48-4e96-9476-974433038e5e) and click on Share → Publish.
+### Deploy to Production
+Build and deploy to your preferred hosting platform (Vercel, Netlify, AWS Amplify, etc.).
 
 ### Environment Variables for Production
 Update your `.env` with production URLs:

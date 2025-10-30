@@ -1,4 +1,4 @@
-const chapterModel = require('../models/chapterModel');
+const { chapterModel } = require('../models');
 
 /**
  * Get all chapters for a subject.
@@ -23,6 +23,7 @@ async function createChapter(req, res) {
     const result = await chapterModel.createChapter(subjectId, chapter);
     res.status(201).json(result);
   } catch (err) {
+    console.error('Chapter creation error:', err.message);
     res.status(500).json({ error: 'Failed to create chapter.' });
   }
 }

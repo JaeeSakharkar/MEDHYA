@@ -11,9 +11,9 @@ export const Header = () => {
       <div className="container flex h-16 items-center justify-between">
         <Link to={isAdmin ? '/admin' : '/dashboard'} className="flex items-center space-x-2">
           <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-lg">Q</span>
+            <span className="text-primary-foreground font-bold text-lg">M</span>
           </div>
-          <span className="font-bold text-xl">QuizLearn</span>
+          <span className="font-bold text-xl">MEDHYA</span>
         </Link>
 
         {user && (

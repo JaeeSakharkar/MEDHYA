@@ -1,4 +1,4 @@
-// LocalStorage service for QuizMaster V2
+// LocalStorage service for MEDHYA
 // This replaces the backend database for local development
 
 export interface Quiz {
@@ -36,10 +36,10 @@ export interface User {
 
 // Storage keys
 const STORAGE_KEYS = {
-  QUIZZES: 'quizmaster_quizzes',
-  QUESTIONS: 'quizmaster_questions',
-  SCORES: 'quizmaster_scores',
-  USERS: 'quizmaster_users'
+  QUIZZES: 'medhya_quizzes',
+  QUESTIONS: 'medhya_questions',
+  SCORES: 'medhya_scores',
+  USERS: 'medhya_users'
 };
 
 // Initialize with sample data if empty

@@ -1,4 +1,4 @@
-const questionModel = require('../models/questionModel');
+const { questionModel } = require('../models');
 
 /**
  * List all questions for a quiz.
@@ -23,6 +23,7 @@ async function createQuestion(req, res) {
     const result = await questionModel.createQuestion(quizId, question);
     res.status(201).json(result);
   } catch (err) {
+    console.error('Question creation error:', err.message);
     res.status(500).json({ error: 'Failed to create question.' });
   }
 }

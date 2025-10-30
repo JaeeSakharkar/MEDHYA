@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { questionsApi, quizzesApi } from '@/lib/api';
+import { backendApi } from '@/services/backendApi';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { Plus, Edit, Trash2, HelpCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -30,9 +30,8 @@ const AdminQuestions = () => {
 
   useEffect(() => {
     const fetchQuizzes = async () => {
-      if (!token) return;
       try {
-        const data = await quizzesApi.getAll(token);
+        const data = await backendApi.quizzes.getAll();
         setQuizzes(Array.isArray(data) ? data : []);
       } catch (err: any) {
         toast({ variant: 'destructive', title: 'Error', description: err.message });
@@ -41,13 +40,13 @@ const AdminQuestions = () => {
       }
     };
     fetchQuizzes();
-  }, [token]);
+  }, []);
 
   useEffect(() => {
     const fetchQuestions = async () => {
-      if (!token || !selectedQuizId) return;
+      if (!selectedQuizId) return;
       try {
-        const data = await questionsApi.getByQuiz(selectedQuizId, token);
+        const data = await backendApi.questions.getByQuiz(selectedQuizId);
         setQuestions(Array.isArray(data) ? data : []);
       } catch (err: any) {
         toast({ variant: 'destructive', title: 'Error', description: err.message });
@@ -62,16 +61,16 @@ const AdminQuestions = () => {
 
     try {
       if (editingQuestion) {
-        await questionsApi.update(selectedQuizId, editingQuestion.id, formData, token);
+        await backendApi.questions.update(selectedQuizId, editingQuestion.id, formData);
         toast({ title: 'Success', description: 'Question updated successfully' });
       } else {
-        await questionsApi.create(selectedQuizId, formData, token);
+        await backendApi.questions.create(selectedQuizId, formData);
         toast({ title: 'Success', description: 'Question created successfully' });
       }
       setIsDialogOpen(false);
       setEditingQuestion(null);
       setFormData({ question: '', options: ['', '', '', ''], correctAnswer: '' });
-      const data = await questionsApi.getByQuiz(selectedQuizId, token);
+      const data = await backendApi.questions.getByQuiz(selectedQuizId);
       setQuestions(Array.isArray(data) ? data : []);
     } catch (err: any) {
       toast({ variant: 'destructive', title: 'Error', description: err.message });
@@ -92,9 +91,9 @@ const AdminQuestions = () => {
     if (!token || !selectedQuizId || !confirm('Are you sure you want to delete this question?')) return;
 
     try {
-      await questionsApi.delete(selectedQuizId, id, token);
+      await backendApi.questions.delete(selectedQuizId, id);
       toast({ title: 'Success', description: 'Question deleted successfully' });
-      const data = await questionsApi.getByQuiz(selectedQuizId, token);
+      const data = await backendApi.questions.getByQuiz(selectedQuizId);
       setQuestions(Array.isArray(data) ? data : []);
     } catch (err: any) {
       toast({ variant: 'destructive', title: 'Error', description: err.message });

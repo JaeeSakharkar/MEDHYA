@@ -1,0 +1,59 @@
+{
+  "quiz": {
+    "title": "JavaScript Fundamentals Quiz",
+    "description": "Test your knowledge of JavaScript basics, ES6 features, and common programming concepts",
+    "chapterId": "javascript-fundamentals"
+  },
+  "questions": [
+    {
+      "text": "What is the correct way to declare a variable in JavaScript ES6?",
+      "options": ["var myVar = 5;", "let myVar = 5;", "const myVar = 5;", "Both let and const are correct"],
+      "correctAnswer": "Both let and const are correct"
+    },
+    {
+      "text": "Which of the following is NOT a JavaScript data type?",
+      "options": ["String", "Boolean", "Integer", "Undefined"],
+      "correctAnswer": "Integer"
+    },
+    {
+      "text": "What does the '===' operator do in JavaScript?",
+      "options": ["Assigns a value", "Compares values only", "Compares both value and type", "Performs addition"],
+      "correctAnswer": "Compares both value and type"
+    },
+    {
+      "text": "Which method is used to add an element to the end of an array?",
+      "options": ["push()", "pop()", "shift()", "unshift()"],
+      "correctAnswer": "push()"
+    },
+    {
+      "text": "What is the output of: console.log(typeof null)?",
+      "options": ["null", "undefined", "object", "boolean"],
+      "correctAnswer": "object"
+    },
+    {
+      "text": "Which of the following is the correct way to create a function in JavaScript?",
+      "options": ["function myFunc() {}", "def myFunc() {}", "create myFunc() {}", "func myFunc() {}"],
+      "correctAnswer": "function myFunc() {}"
+    },
+    {
+      "text": "What is a closure in JavaScript?",
+      "options": ["A way to close the browser", "A function that has access to outer scope variables", "A method to end a loop", "A type of error"],
+      "correctAnswer": "A function that has access to outer scope variables"
+    },
+    {
+      "text": "Which method is used to convert a string to lowercase?",
+      "options": ["toLowerCase()", "toLower()", "lower()", "downCase()"],
+      "correctAnswer": "toLowerCase()"
+    },
+    {
+      "text": "What is the difference between 'let' and 'var'?",
+      "options": ["No difference", "let has block scope, var has function scope", "var is newer than let", "let is faster than var"],
+      "correctAnswer": "let has block scope, var has function scope"
+    },
+    {
+      "text": "Which of the following is used to handle asynchronous operations in JavaScript?",
+      "options": ["Promises", "Callbacks", "Async/Await", "All of the above"],
+      "correctAnswer": "All of the above"
+    }
+  ]
+}

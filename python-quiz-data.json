@@ -1,0 +1,59 @@
+{
+  "quiz": {
+    "title": "Python Programming Basics",
+    "description": "Test your knowledge of Python syntax, data structures, and core concepts",
+    "chapterId": "python-fundamentals"
+  },
+  "questions": [
+    {
+      "text": "Which of the following is the correct way to create a list in Python?",
+      "options": ["list = [1, 2, 3]", "list = (1, 2, 3)", "list = {1, 2, 3}", "list = <1, 2, 3>"],
+      "correctAnswer": "list = [1, 2, 3]"
+    },
+    {
+      "text": "What is the output of: print(type([]))?",
+      "options": ["<class 'array'>", "<class 'list'>", "<class 'tuple'>", "<class 'dict'>"],
+      "correctAnswer": "<class 'list'>"
+    },
+    {
+      "text": "Which keyword is used to define a function in Python?",
+      "options": ["function", "def", "func", "define"],
+      "correctAnswer": "def"
+    },
+    {
+      "text": "What is the correct way to create a dictionary in Python?",
+      "options": ["dict = [key: value]", "dict = {key: value}", "dict = (key: value)", "dict = <key: value>"],
+      "correctAnswer": "dict = {key: value}"
+    },
+    {
+      "text": "Which method is used to add an item to the end of a list?",
+      "options": ["add()", "append()", "insert()", "push()"],
+      "correctAnswer": "append()"
+    },
+    {
+      "text": "What is the output of: print(3 ** 2)?",
+      "options": ["6", "9", "32", "Error"],
+      "correctAnswer": "9"
+    },
+    {
+      "text": "Which of the following is used for comments in Python?",
+      "options": ["//", "/* */", "#", "<!-- -->"],
+      "correctAnswer": "#"
+    },
+    {
+      "text": "What is the correct way to check if a key exists in a dictionary?",
+      "options": ["key in dict", "dict.hasKey(key)", "dict.contains(key)", "key.exists(dict)"],
+      "correctAnswer": "key in dict"
+    },
+    {
+      "text": "Which loop is used to iterate over a sequence in Python?",
+      "options": ["for loop", "while loop", "do-while loop", "Both for and while loops"],
+      "correctAnswer": "Both for and while loops"
+    },
+    {
+      "text": "What is the output of: print(len('Hello'))?",
+      "options": ["4", "5", "6", "Error"],
+      "correctAnswer": "5"
+    }
+  ]
+}

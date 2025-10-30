@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { chaptersApi } from '@/lib/api';
+import { backendApi } from '@/services/backendApi';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { Plus, Edit, Trash2, FolderOpen } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -24,10 +24,10 @@ const AdminChapters = () => {
   const [formData, setFormData] = useState({ title: '', description: '', order: 0 });
 
   const fetchChapters = async () => {
-    if (!token || !subjectId) return;
+    if (!subjectId) return;
     setLoading(true);
     try {
-      const data = await chaptersApi.getBySubject(subjectId, token);
+      const data = await backendApi.chapters.getBySubject(subjectId);
       setChapters(Array.isArray(data) ? data : []);
     } catch (err: any) {
       toast({ variant: 'destructive', title: 'Error', description: err.message });
@@ -38,14 +38,14 @@ const AdminChapters = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!token || !subjectId) return;
+    if (!subjectId) return;
 
     try {
       if (editingChapter) {
-        await chaptersApi.update(subjectId, editingChapter.id, formData, token);
+        await backendApi.chapters.update(subjectId, editingChapter.id, formData);
         toast({ title: 'Success', description: 'Chapter updated successfully' });
       } else {
-        await chaptersApi.create(subjectId, formData, token);
+        await backendApi.chapters.create(subjectId, formData);
         toast({ title: 'Success', description: 'Chapter created successfully' });
       }
       setIsDialogOpen(false);
@@ -64,10 +64,10 @@ const AdminChapters = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (!token || !subjectId || !confirm('Are you sure you want to delete this chapter?')) return;
+    if (!subjectId || !confirm('Are you sure you want to delete this chapter?')) return;
 
     try {
-      await chaptersApi.delete(subjectId, id, token);
+      await backendApi.chapters.delete(subjectId, id);
       toast({ title: 'Success', description: 'Chapter deleted successfully' });
       fetchChapters();
     } catch (err: any) {
@@ -147,7 +147,7 @@ const AdminChapters = () => {
                           id="order"
                           type="number"
                           value={formData.order}
-                          onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) })}
+                          onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) || 0 })}
                         />
                       </div>
                       <div className="flex gap-3">

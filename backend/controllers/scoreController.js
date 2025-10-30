@@ -1,4 +1,4 @@
-const scoreModel = require('../models/scoreModel');
+const { scoreModel } = require('../models');
 
 /**
  * List all scores for logged-in user.

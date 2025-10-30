@@ -1,4 +1,4 @@
-// S3-based API service for QuizMaster V2
+// S3-based API service for MEDHYA
 import { s3QuizStorage, s3QuestionStorage, s3ScoreStorage, s3UserStorage, Quiz, Question, Score, User } from './s3Storage';
 
 // Simulate API delay for realistic experience

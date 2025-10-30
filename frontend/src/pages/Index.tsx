@@ -25,10 +25,10 @@ const Index = () => {
             <GraduationCap className="h-12 w-12 text-primary-foreground" />
           </div>
           <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
-            QuizLearn Platform
+            MEDHYA Platform
           </h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Master your subjects through interactive quizzes and organized learning paths. 
+            Master medical subjects through interactive quizzes and organized learning paths. 
             Track your progress and compete with peers.
           </p>
           <Button 
@@ -104,7 +104,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t mt-16">
         <div className="container mx-auto px-4 py-8 text-center text-muted-foreground">
-          <p>&copy; 2025 QuizLearn Platform. All rights reserved.</p>
+          <p>&copy; 2025 MEDHYA Medical Education Platform. All rights reserved.</p>
         </div>
       </footer>
     </div>

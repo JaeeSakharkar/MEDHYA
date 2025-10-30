@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { localApi } from '@/services/localApi';
+import { backendApi } from '@/services/backendApi';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { Plus, Edit, Trash2, BookOpen } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -24,7 +24,7 @@ const AdminQuizzes = () => {
 
   const fetchQuizzes = async () => {
     try {
-      const data = await localApi.quizzes.getAll();
+      const data = await backendApi.quizzes.getAll();
       setQuizzes(Array.isArray(data) ? data : []);
     } catch (err: any) {
       toast({ variant: 'destructive', title: 'Error', description: err.message });
@@ -42,10 +42,10 @@ const AdminQuizzes = () => {
 
     try {
       if (editingQuiz) {
-        await localApi.quizzes.update(editingQuiz.id, formData);
+        await backendApi.quizzes.update(editingQuiz.id, formData);
         toast({ title: 'Success', description: 'Quiz updated successfully' });
       } else {
-        await localApi.quizzes.create(formData);
+        await backendApi.quizzes.create(formData);
         toast({ title: 'Success', description: 'Quiz created successfully' });
       }
       setIsDialogOpen(false);
@@ -67,7 +67,7 @@ const AdminQuizzes = () => {
     if (!confirm('Are you sure you want to delete this quiz?')) return;
 
     try {
-      await localApi.quizzes.delete(id);
+      await backendApi.quizzes.delete(id);
       toast({ title: 'Success', description: 'Quiz deleted successfully' });
       fetchQuizzes();
     } catch (err: any) {

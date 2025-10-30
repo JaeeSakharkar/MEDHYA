@@ -26,7 +26,7 @@ const SimpleLogin = () => {
   };
 
   const handleQuickLogin = (userType: string) => {
-    const quickEmail = userType === 'admin' ? 'admin@quizmaster.com' : 'user@quizmaster.com';
+    const quickEmail = userType === 'admin' ? 'admin@medhya.com' : 'user@medhya.com';
     setEmail(quickEmail);
     localStorage.setItem('isLoggedIn', 'true');
     localStorage.setItem('userEmail', quickEmail);
@@ -40,7 +40,7 @@ const SimpleLogin = () => {
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-blue-600">
             <BookOpen className="h-6 w-6 text-white" />
           </div>
-          <CardTitle className="text-2xl font-bold">Welcome to QuizMaster V2</CardTitle>
+          <CardTitle className="text-2xl font-bold">Welcome to MEDHYA</CardTitle>
           <CardDescription>
             Enter your email to access the quiz platform
           </CardDescription>

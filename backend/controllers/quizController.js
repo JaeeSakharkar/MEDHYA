@@ -1,5 +1,5 @@
 // Handles quiz endpoints logic
-const quizModel = require('../models/quizModel');
+const { quizModel } = require('../models');
 
 /**
  * Get all quizzes.
@@ -36,6 +36,7 @@ async function createQuiz(req, res) {
     const result = await quizModel.createQuiz(quiz);
     res.status(201).json(result);
   } catch (err) {
+    console.error('Quiz creation error:', err.message);
     res.status(500).json({ error: 'Failed to create quiz.' });
   }
 }

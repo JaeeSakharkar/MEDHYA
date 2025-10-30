@@ -1,4 +1,4 @@
-// S3-based storage service for QuizMaster V2
+// S3-based storage service for MEDHYA
 // Uses S3 to store JSON files as database tables
 
 export interface Quiz {
@@ -36,8 +36,8 @@ export interface User {
 
 // S3 configuration
 const S3_CONFIG = {
-  BUCKET_NAME: 'your-quizmaster-data-bucket', // Change this to your bucket name
-  BASE_URL: 'https://your-quizmaster-data-bucket.s3.amazonaws.com', // Change this to your bucket URL
+  BUCKET_NAME: 'your-medhya-data-bucket', // Change this to your bucket name
+  BASE_URL: 'https://your-medhya-data-bucket.s3.amazonaws.com', // Change this to your bucket URL
   FILES: {
     QUIZZES: 'data/quizzes.json',
     QUESTIONS: 'data/questions.json',

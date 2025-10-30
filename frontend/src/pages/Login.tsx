@@ -24,9 +24,9 @@ const Login = () => {
             <GraduationCap className="h-9 w-9 text-primary-foreground" />
           </div>
           <div>
-            <CardTitle className="text-3xl font-bold">Welcome to QuizLearn</CardTitle>
+            <CardTitle className="text-3xl font-bold">Welcome to MEDHYA</CardTitle>
             <CardDescription className="text-base mt-2">
-              Your interactive learning platform
+              Your medical education platform
             </CardDescription>
           </div>
         </CardHeader>

@@ -101,7 +101,7 @@ const Dashboard = () => {
                 <BookOpen className="h-5 w-5 text-primary" />
                 Available Quizzes
               </CardTitle>
-              <CardDescription>Choose a quiz to start learning</CardDescription>
+              <CardDescription>Choose a quiz to start your medical education journey</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               {quizzes.length === 0 ? (

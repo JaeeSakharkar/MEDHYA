@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Header } from '@/components/Header';
 import { AdminSidebar } from '@/components/AdminSidebar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { localApi } from '@/services/localApi';
+import { backendApi } from '@/services/backendApi';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { Users, BookOpen, Trophy, TrendingUp, Download, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -19,11 +19,11 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        // Fetch all data for stats using localStorage
+        // Fetch all data for stats from MongoDB backend
         const [quizzes, users, scores] = await Promise.all([
-          localApi.quizzes.getAll(),
-          localApi.users.getAll(),
-          localApi.scores.getAll()
+          backendApi.quizzes.getAll(),
+          backendApi.users.getAll(),
+          backendApi.scores.getAll()
         ]);
         
         setStats({
@@ -47,10 +47,10 @@ const AdminDashboard = () => {
   const exportData = () => {
     try {
       const data = {
-        quizzes: JSON.parse(localStorage.getItem('quizmaster_quizzes') || '[]'),
-        questions: JSON.parse(localStorage.getItem('quizmaster_questions') || '[]'),
-        scores: JSON.parse(localStorage.getItem('quizmaster_scores') || '[]'),
-        users: JSON.parse(localStorage.getItem('quizmaster_users') || '[]'),
+        quizzes: JSON.parse(localStorage.getItem('medhya_quizzes') || '[]'),
+        questions: JSON.parse(localStorage.getItem('medhya_questions') || '[]'),
+        scores: JSON.parse(localStorage.getItem('medhya_scores') || '[]'),
+        users: JSON.parse(localStorage.getItem('medhya_users') || '[]'),
         exportDate: new Date().toISOString(),
         version: '2.0'
       };
@@ -59,7 +59,7 @@ const AdminDashboard = () => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `quizmaster-data-${new Date().toISOString().split('T')[0]}.json`;
+      a.download = `medhya-data-${new Date().toISOString().split('T')[0]}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -86,10 +86,10 @@ const AdminDashboard = () => {
         }
         
         // Import data to localStorage
-        localStorage.setItem('quizmaster_quizzes', JSON.stringify(data.quizzes || []));
-        localStorage.setItem('quizmaster_questions', JSON.stringify(data.questions || []));
-        localStorage.setItem('quizmaster_scores', JSON.stringify(data.scores || []));
-        localStorage.setItem('quizmaster_users', JSON.stringify(data.users || []));
+        localStorage.setItem('medhya_quizzes', JSON.stringify(data.quizzes || []));
+        localStorage.setItem('medhya_questions', JSON.stringify(data.questions || []));
+        localStorage.setItem('medhya_scores', JSON.stringify(data.scores || []));
+        localStorage.setItem('medhya_users', JSON.stringify(data.users || []));
         
         toast({ title: 'Success', description: 'Data imported successfully!' });
         

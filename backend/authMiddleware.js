@@ -19,6 +19,17 @@ function getKey(header, callback) {
 
 // Authenticate middleware
 function authenticateJWT(req, res, next) {
+  // Development mode bypass
+  if (process.env.DEV_MODE === 'true' && process.env.NODE_ENV === 'development') {
+    console.log('🔓 Development mode: Bypassing authentication');
+    req.user = {
+      sub: 'dev-user-123',
+      email: 'dev@example.com',
+      'cognito:groups': ['admin'] // Give admin access in dev mode
+    };
+    return next();
+  }
+
   const authHeader = req.headers.authorization;
   if (!authHeader) {
     return res.status(401).json({ error: 'Missing Authorization header' });

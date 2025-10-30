@@ -1,7 +1,7 @@
 {
-  "name": "backend",
+  "name": "medhya-backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "MEDHYA Medical Education Platform Backend API",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -19,7 +19,8 @@
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
-    "jwks-rsa": "^3.2.0"
+    "jwks-rsa": "^3.2.0",
+    "mongoose": "^8.19.2"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
