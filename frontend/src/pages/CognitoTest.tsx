@@ -13,7 +13,7 @@ const CognitoTest = () => {
   const CLIENT_ID = '6npa9g9it0o66diikabm29j9je';
   const REDIRECT_URI = window.location.origin + '/callback';
 
-  const authUrl = `https://${COGNITO_DOMAIN}/login?client_id=${CLIENT_ID}&response_type=token&scope=email+openid+profile&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
+  const authUrl = `https://${COGNITO_DOMAIN}/login?client_id=${CLIENT_ID}&response_type=token&scope=openid&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
 
   const checkToken = () => {
     const storedToken = localStorage.getItem('idToken');

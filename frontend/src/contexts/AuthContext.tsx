@@ -63,7 +63,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Redirect to Cognito Hosted UI login
   const login = () => {
     // Using implicit flow (response_type=token) - works without client secret
-    const authUrl = `https://${COGNITO_DOMAIN}/login?client_id=${CLIENT_ID}&response_type=token&scope=email+openid+profile&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
+    // Using minimal scopes to avoid invalid_scope error
+    const authUrl = `https://${COGNITO_DOMAIN}/login?client_id=${CLIENT_ID}&response_type=token&scope=openid&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`;
     console.log('Redirecting to Cognito:', authUrl);
     window.location.href = authUrl;
   };
