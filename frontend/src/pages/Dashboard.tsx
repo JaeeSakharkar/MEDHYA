@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Header } from '@/components/Header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { quizzesApi, scoresApi } from '@/lib/api';
+import { backendApi } from '@/services/backendApi';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { BookOpen, Trophy, Play, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -17,17 +17,16 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!token) return;
-      
       try {
         const [quizzesData, scoresData] = await Promise.all([
-          quizzesApi.getAll(token),
-          scoresApi.getMy(token)
+          backendApi.quizzes.getAll(),
+          backendApi.scores.getMy()
         ]);
         setQuizzes(Array.isArray(quizzesData) ? quizzesData : []);
         setRecentScores(Array.isArray(scoresData) ? scoresData.slice(0, 5) : []); // Show last 5 scores
       } catch (err: any) {
-        setError(err.message);
+        console.error('Dashboard fetch error:', err);
+        setError(err.message || 'Failed to load dashboard data');
       } finally {
         setLoading(false);
       }

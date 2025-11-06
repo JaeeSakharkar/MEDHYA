@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { quizzesApi, questionsApi, scoresApi } from '@/lib/api';
+import { backendApi } from '@/services/backendApi';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { CheckCircle, XCircle, ArrowRight, Trophy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -27,20 +27,26 @@ const QuizAttempt = () => {
 
   useEffect(() => {
     const fetchQuiz = async () => {
-      if (!token || !id) return;
+      if (!id) return;
       
       try {
         const [quizData, questionsData] = await Promise.all([
-          quizzesApi.getById(id, token),
-          questionsApi.getByQuiz(id, token)
+          backendApi.quizzes.getById(id),
+          backendApi.questions.getByQuiz(id)
         ]);
         setQuiz(quizData);
         setQuestions(Array.isArray(questionsData) ? questionsData : []);
+        
+        // Debug logging
+        console.log('Quiz data:', quizData);
+        console.log('Questions data:', questionsData);
+        
       } catch (err: any) {
+        console.error('Error fetching quiz:', err);
         toast({
           variant: 'destructive',
           title: 'Error',
-          description: err.message
+          description: err.message || 'Failed to load quiz'
         });
       } finally {
         setLoading(false);
@@ -48,7 +54,7 @@ const QuizAttempt = () => {
     };
 
     fetchQuiz();
-  }, [token, id, toast]);
+  }, [id, toast]);
 
   const handleAnswer = (questionId: string, answer: string) => {
     setAnswers(prev => ({ ...prev, [questionId]: answer }));
@@ -79,13 +85,13 @@ const QuizAttempt = () => {
     setShowResults(true);
 
     // Submit score to backend
-    if (token && id) {
+    if (id) {
       try {
-        await scoresApi.submit({
+        await backendApi.scores.submit({
           quizId: id,
-          score: percentage,
-          answers
-        }, token);
+          score: correct,
+          totalQuestions: questions.length
+        });
       } catch (err: any) {
         console.error('Failed to submit score:', err);
       }
@@ -94,15 +100,45 @@ const QuizAttempt = () => {
 
   if (loading) return <LoadingSpinner />;
 
-  if (!quiz || questions.length === 0) {
+  if (!quiz) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
         <main className="container py-8">
           <Card>
             <CardContent className="py-12 text-center">
-              <p className="text-muted-foreground">Quiz not found or has no questions</p>
-              <Button onClick={() => navigate('/dashboard')} className="mt-4">
+              <XCircle className="h-16 w-16 text-destructive mx-auto mb-4" />
+              <h2 className="text-2xl font-bold mb-2">Quiz Not Found</h2>
+              <p className="text-muted-foreground mb-4">
+                The quiz you're looking for doesn't exist or has been removed.
+              </p>
+              <Button onClick={() => navigate('/dashboard')}>
+                Back to Dashboard
+              </Button>
+            </CardContent>
+          </Card>
+        </main>
+      </div>
+    );
+  }
+
+  if (questions.length === 0) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="container py-8">
+          <Card>
+            <CardContent className="py-12 text-center">
+              <CheckCircle className="h-16 w-16 text-primary mx-auto mb-4" />
+              <h2 className="text-2xl font-bold mb-2">{quiz.title}</h2>
+              <p className="text-muted-foreground mb-4">
+                This quiz is being prepared. Questions will be added soon by the instructor.
+              </p>
+              <div className="space-y-2 text-sm text-muted-foreground mb-6">
+                <p><strong>Subject:</strong> {quiz.subject}</p>
+                <p><strong>Description:</strong> {quiz.description}</p>
+              </div>
+              <Button onClick={() => navigate('/dashboard')}>
                 Back to Dashboard
               </Button>
             </CardContent>

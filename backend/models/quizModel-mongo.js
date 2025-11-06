@@ -9,7 +9,7 @@ async function listQuizzes() {
     const quizzes = await Quiz.find().sort({ createdAt: -1 });
     // Transform data to match frontend expectations
     return quizzes.map(q => ({
-      id: parseInt(q.id.replace('quiz-', '').replace('test-quiz-', '')) || q.id,
+      id: q.id, // Keep original ID format for consistency
       title: q.title,
       subject: q.chapterId || 'General', // Frontend expects 'subject'
       description: q.description,
@@ -54,12 +54,24 @@ async function createQuiz(quiz) {
  */
 async function getQuiz(id) {
   try {
-    const q = await Quiz.findOne({ id });
+    // Try to find quiz by the exact ID first
+    let q = await Quiz.findOne({ id: id });
+    
+    // If not found and ID is numeric, try with quiz- prefix
+    if (!q && !isNaN(id)) {
+      q = await Quiz.findOne({ id: `quiz-${id}` });
+    }
+    
+    // If still not found and ID doesn't have prefix, try with test-quiz- prefix
+    if (!q && !id.startsWith('quiz-') && !id.startsWith('test-quiz-')) {
+      q = await Quiz.findOne({ id: `test-quiz-${id}` });
+    }
+    
     if (!q) return null;
     
     // Transform data to match frontend expectations
     return {
-      id: parseInt(q.id.replace('quiz-', '').replace('test-quiz-', '')) || q.id,
+      id: q.id, // Keep original ID format
       title: q.title,
       subject: q.chapterId || 'General',
       description: q.description,
